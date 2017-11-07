@@ -42,6 +42,6 @@ clean:
 mrproper:
 	git clean -xfd
 
-rsync: html pdf
-	rsync -av ${ae}.html ${ae}.pdf common-lisp.net:~frideau/public_html/climbing/
-
+rsync: climbing.pdf climbing.html
+	rsync -av --delete $^ *.js *.css *.png ~/files/climbing/
+	rsync -av --delete ~/files/climbing/ bespin:files/climbing/

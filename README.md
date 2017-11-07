@@ -9,3 +9,9 @@ It is based on works done as part of my thesis at < https://j.mp/FarePhD >.
 
 See also my previous presentation at < https://youtu.be/heU8NyX5Hus >.
 
+Viewing the article
+-------------------
+
+HTML and PDF versions of the paper (2 pages + bibliography) can be found here:
+
+  * http://fare.tunes.org/files/climbing/climbing.pdf
