@@ -1,0 +1,10 @@
+2017-11-07 Feedback from arjanb on irc:
+<arjanb> hi, I have some quick comments on your OBT submission:
+<arjanb> The O in section 2 seems out of place: capital letter suggest morphism, and O is not mention anywhere later
+<arjanb> I would use a different set of letters for the nodes and arrows, eg. C vs c is confusing
+<arjanb> What phi means could better be moved to section 2
+<arjanb> Some diagrams seems to contain too many blue things
+<arjanb> The diagrams are too small for the subscripts to be readable
+<arjanb> Maybe footnote 2 could better be integrated into the text of section 2
+<arjanb> I would not put agda code in a 2 page abstract, and just keep explaining it in category theory terms
+<arjanb> I think most of section 4 could be moved into the introduction

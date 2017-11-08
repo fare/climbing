@@ -32,7 +32,7 @@
 (define multiple-sections (make-parameter #f))
 
 (define (moneyquote . x) (bold x))
-(define (q . x) (list "\"" x "\""))
+(define (q . x) (list "``" x "''"))
 
 (define-syntax (Lblock stx)
   (syntax-parse stx

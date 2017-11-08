@@ -223,18 +223,18 @@ reflection can control @emph{how} they do it.
 An elementary use of Category Theory can unify
 Operational Semantics and other common model of computations:
 potential states of a computation and labelled transitions between them
-are the nodes ("objects") and arrows ("morphisms") of a category.
-The implementation of an abstract computation @m{A} with a concrete one @m{C}
-is then a "partial functor" from @m{C} to @m{A}, i.e.
-a span of a functor from @m{O} to @m{A} and a full embedding of @m{O} in @m{C},
-where @m{O} is a subset of "observable" safe points in @m{C}.
+are the nodes (@q{objects}) and arrows (@q{morphisms}) of a category.
+The implementation of an abstract computation @${A} with a concrete one @${C}
+is then a @q{partial functor} from @${C} to @${A}, i.e.
+a span of a functor from @${O} to @${A} and a full embedding of @${O} in @${C},
+where @${O} is a subset of @q{observable} safe points in @${C}.
 @;
 Partiality is essential: concepts atomic in an abstract calculus
 usually aren't in a more concrete calculus; concrete computations thus include
 many intermediate steps not immediately meaningful in the abstract.@note{
 For instance, languages in the ALGOL tradition have no notion of explicit data registers or stacks,
-yet are typically implemented using lower-level machines (virtual or "real") that do;
-meanwhile their high-level "primitives" each require many low-level instructions to implement.}
+yet are typically implemented using lower-level machines (virtual or @q{real}) that do;
+meanwhile their high-level @q{primitives} each require many low-level instructions to implement.}
 
 @;@subsection{Properties of Implementations}
 
@@ -257,7 +257,7 @@ abstract nodes or arrows aren't left unimplemented in the concrete
 (e.g. can express the notion of simulation@~cite[MilnerSimulation1971]));
 variants of @emph{liveness} guarantee that progress in the abstract is made
 given enough progress in the concrete
-(e.g. can express "real time" behavior);
+(e.g. can express @q{real time} behavior);
 and variants of @emph{observability} guarantee that an observable abstract state
 can be recovered given any intermediate state at which the concrete computation is interrupted.
 These properties can be visualized using bicolor diagrams such as in figure 1.@note{
@@ -277,11 +277,11 @@ as per the Curry-Howard Correspondence@~cite[Howard1980].
 as the following type of a function @m{observe} where:
 @m{.o} and @m{.⇒} denote node-wise and arrow-wise components; @;of categories and functors;
 @m{Φ} is the interpretation functor opposite the implementation of @m{A} with @m{C};
-@m{a} is the starting abstract state concretely implemented by @m{c} (implicit inputs);
-@m{c'} is the concrete state in which @m{C} was interrupted after effects @m{f} (explicit inputs);
-@m{c''} is the observable safe point that is being recovered after effects @m{g} (explicit outputs);
+@m{a} is the starting abstract state concretely implemented by @m{c} (implicit input);
+@m{c'} is the concrete state in which @m{C} was interrupted after effects @m{f} (explicit input);
+@m{c''} is the observable safe point that is being recovered after effects @m{g} (explicit output);
 @m{safe.⇒} guarantees that @m{g} cannot take too much resources or do blocking I/O
-or depend on user intervention
+or depend on user intervention;
 @;(see figure 1 where it is represented as a subset @m{C^s} of @m{C}),
 and @m{a''}, @m{h} and the last property ensure the diagram commutes (implicit outputs).
 @verbatim|{
