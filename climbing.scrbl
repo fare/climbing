@@ -206,7 +206,7 @@ Semantics and Runtime Reflection.
 Semantics predicts properties of computations without running them.
 Runtime Reflection allows unpredictable modifications to running computations.
 The two seem opposite, and those who practice one tend to ignore or prohibit the other.
-This work reconciles them:
+This work@~cite[FarePhD] reconciles them:
 semantics can specify @emph{what} computations do,
 reflection can control @emph{how} they do it.
 
@@ -222,9 +222,10 @@ given a subset @${O} of @q{observable} safe points in @${C},
 a span of an interpretation functor from @${O} to @${A}
 and the full embedding of @${O} in @${C}.
 @;
-Partiality is essential: concepts atomic in an abstract calculus
-usually are not in a more concrete calculus; concrete computations thus include
-many intermediate steps not immediately meaningful in the abstract.@note{
+@emph{Partiality} is essential: concepts atomic in an abstract calculus
+usually are not atomic in a more concrete calculus;
+concrete computations thus include many intermediate steps
+not immediately meaningful in the abstract.@note{
 For instance, languages in the ALGOL tradition have no notion of explicit data registers or stacks,
 yet are typically implemented using lower-level machines (virtual or @q{real}) that do;
 meanwhile their high-level @q{primitives} each require many low-level instructions to implement.}
@@ -239,7 +240,7 @@ meanwhile their high-level @q{primitives} each require many low-level instructio
      ("observability" "Observable"))))
 
 The mandatory @emph{soundness} criterion is, remarkably, the same as functoriality.
-Many other interesting properties may or may not be hold for a given implementation:
+Many other interesting properties may or may not hold for a given implementation:
 variants of @;@emph{totality} and
 @emph{completeness} guarantee that
 abstract nodes or arrows are not left unimplemented in the concrete
@@ -349,7 +350,7 @@ available only to one implementation of one language,
 using some ad hoc notion of safe points
 (PCLSRing@~cite[PCLSRing], Garbage Collection@~cite[UPGCTR1992], etc.).
 The promise of this runtime reflection protocol is to achieve these applications
-in comparatively simple yet general ways, and made available universally:
+in comparatively simple yet general and @emph{composable} ways, and made available universally:
 tools such as shells, debuggers, or code instrumentations,
 can then work on all possible implementations of all languages,
 specialized using e.g. typeclasses.
