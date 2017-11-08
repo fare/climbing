@@ -120,7 +120,7 @@
   (block-with-render-mode
    (λ (mode)
      (let ([image-path (λ (x) (format "~a/fig-~a" figure-dir (car x)))]
-           [scale (case mode [(html) 1/3] [(latex) .55])])
+           [scale (case mode [(html) 1/7] [(latex) .55])])
        (tabular
         #:style 'center
         #:column-properties (make-list (length ps) 'center)
