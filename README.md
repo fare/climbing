@@ -1,7 +1,7 @@
 Climbing Up the Semantic Tower — at Runtime
 ===========================================
 
-This is a proposal for a presentation at the
+This paper was accepted for a presentation at the
 [Off the Beaten Track (OBT)](https://conf.researchr.org/track/POPL-2018/OBT-2018)
 workshop at [POPL 2018](https://popl18.sigplan.org/home).
 

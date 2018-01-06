@@ -45,3 +45,6 @@ mrproper:
 rsync: climbing.pdf climbing.html
 	rsync -av --delete $^ *.js *.css *.png ~/files/climbing/
 	rsync -av --delete ~/files/climbing/ bespin:files/climbing/
+
+fare-obt2018.html: fare-obt2018.rkt
+	racket $< > $@
