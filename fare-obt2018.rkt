@@ -60,6 +60,68 @@
          ...))
 (defcodes scheme javascript haskell)
 
+;; Convert one digit to a roman numeral, given strings for one unit, five units and ten units.
+(define (roman-numeral<-digit digit i v x)
+  (case digit
+    [(0) ""]
+    [(1) i]
+    [(2) (string-append i i)]
+    [(3) (string-append i i i)]
+    [(4) (string-append i v)]
+    [(5) v]
+    [(6) (string-append v i)]
+    [(7) (string-append v i i)]
+    [(8) (string-append v i i i)]
+    [(9) (string-append i x)]
+    [else (error "incorrect digit ~a" digit)]))
+
+(define (roman-numeral<-integer n)
+  ;; NB: works for integer from 1 to 3999
+  (when (or (not (integer? n)) (< n 1) (> n 3999))
+    (error "I cannot convert ~s to a roman numeral" n))
+  (let* ((units (modulo n 10))
+         (n/10 (/ (- n units) 10))
+         (tens (modulo n/10 10))
+         (n/100 (/ (- n/10 tens) 10))
+         (hundreds (modulo n/100 10))
+         (thousands (/ (- n/100 hundreds) 10)))
+    (string-append
+     (roman-numeral<-digit thousands "M" "" "")
+     (roman-numeral<-digit hundreds "C" "D" "M")
+     (roman-numeral<-digit tens "X" "L" "C")
+     (roman-numeral<-digit units "I" "V" "X"))))
+
+(define (LaTeX-name x)
+  "LaTeX name for a symbol"
+  (call-with-output-string
+   (λ (out)
+     (call-with-input-string
+      (symbol->string x)
+      (λ (in)
+	(letrec
+	    ((loop
+	      (λ (upcase-next?)
+		(let ((c (peek-char in)))
+		  (cond
+		   ((eof-object? c))
+		   ((char-alphabetic? c)
+		    (read-char in)
+		    (display ((if upcase-next? char-upcase char-downcase) c) out)
+		    (loop #f))
+		   ((char-numeric? c)
+		    (display #\x out)
+		    (display (roman-numeral<-integer
+			      (string->number
+			       (bytes->string/latin-1
+				(first
+				 (regexp-match #rx"^[0-9]+" in)))))
+			     out)
+		    (loop #f))
+		   (else
+		    (read-char in)
+		    (loop #t)))))))
+	  (loop #f)))))))
+
 (define (pic-url name url)
   (let ((file (string-append "resources/pic/" name)))
     (unless (file-exists? file)
@@ -80,6 +142,9 @@
 
 (define (image name url . size)
   (img src: (pic-url name url) alt: name height: (if (empty? size) "75%" size)))
+(define (fig name . options)
+  (apply img src: (string-append "resources/pic/fig-" (LaTeX-name name) ".png")
+         alt: name options))
 
 (define *white* "#ffffff")
 (define *gray* "#7f7f7f")
@@ -151,7 +216,8 @@
 
 (slide ()
  @h1{Climbing Up the Semantic Tower - at Runtime}
- @CB{First Class Implementations}
+ ~
+ @bt{First Class Implementations}
  ~
  ~
  ~
@@ -161,392 +227,21 @@
  @p{Off the Beaten Track 2018, 2018-01-13}
  @url{http://github.com/fare/climbing})
 
-#|
-(slide-group "Introduction: Stories"
-(gslide ()
- @h1{Stories}
- (table
-  (tr
-   ;;(td (image "gone-with-the-wind.jpg" "http://static.rogerebert.com/uploads/movie/movie_poster/gone-with-the-wind-1939/large_lqPnvmaX4oZY9teAOT7M0txCLkS.jpg" "40%"))
-   (td (image "tosca.jpg" "https://s-media-cache-ak0.pinimg.com/originals/d4/cf/34/d4cf34cdac1191dcb38a0a1a61a0069b.jpg" "28%"))
-   (td (image "transmetropolitan-one-more-time.jpg" "http://megasad.com/old/comics/covers/large/transmetropolitan-collection10.jpg" "20%"))
-   (td (image "1984.jpg" "https://yifymovie.re/images/bposter/1984-1984-movie-poster.jpg" "50%"))
-   (td (image "real-genius.jpg" "https://i.jeded.com/i/real-genius.16835.jpg" "24%")))
-  (tr
-   (td (image "holy-bible.jpg" "https://thewrittenwordreviews.files.wordpress.com/2009/03/holy-bible-cover.jpg" "10%"))
-   ;;(td (image "decline-and-fall.jpg" "https://images-na.ssl-images-amazon.com/images/I/51LaFDYYMGL._SX362_BO1,204,203,200_.jpg" "40%"))
-   (td (image "gulag-archipelago.jpg" "https://images-na.ssl-images-amazon.com/images/I/41LZ%2BGzRwjL._AC_UL320_SR206,320_.jpg" "80%"))
-   (td (image "huckleberry-finn.jpg" "https://cdn2.hubspot.net/hub/237126/file-534578648-jpg/Huckleberry_Finn_Cover.jpg" "33%"))
-   (td (image "the-importance-of-being-earnest.jpg" "http://1tsp5vpomo32awvuo47ta7f1.wpengine.netdna-cdn.com/wp-content/uploads/2017/03/the-importance-of-being-earnest-cover.jpg" "28%"))))
-  @comment{
-Hi. I'm Faré and I love storytelling.
-
-Who here likes stories: novels, movies, comic books, theater, opera?
-[Pic: a collage of famous covers of novels or comic books, of famous movie, theater or opera posters:
- Real Genius, etc.]
-
-Who doesn't like *any* kind of stories? Not even historical or anecdotal stories? [Wow.]
-Well, [despite exceptions,] I see a trend.
-
-The human mind is verily attuned to stories, it craves them,
-because we like to explain our world in term of stories.
-And not just the world, but our role in the world.
-})
-
-(gslide ()
-  @h1{@gray{Universal Stories}} ;; XXX SKIP?
-  (let ((theme-pic
-         '(("Boy Meets Girl" "lovelace-babbage.jpg" "https://images-na.ssl-images-amazon.com/images/I/91FCUHSgEAL.jpg" "10%")
-           ("Man Eats Forbidden Fruit" "alan-turing.jpg" "http://i.dailymail.co.uk/i/pix/2014/12/11/066267B800000514-0-The_famous_early_computer_inventor_and_war_hero_Alan_Mathison_Tu-m-17_1418322993327.jpg" "60%")
-           ("Novice Grows into Master" "torvalds.jpg" "https://www.linux.com/sites/lcom/files/gallery/Linux%20Beer%20Use.jpg" "40%")
-           ("Horror Hidden at Home" "heartbleed.jpg" "https://www.eff.org/files/2014/04/10/heartbleed-01-sm_0.jpg" "66%"))))
-    (table
-     (tr (map (λ (x) (td valign: 'top (apply image (rest x)))) theme-pic))
-     (tr (map (λ (x) (td width: "25%" (font color: *gray* (first x)))) theme-pic))))
-  @comment{
-There are many common stories so general that they can apply in any kind human situation.
-
-I am not going to discuss those stories today.
-})
-
-(gslide ()
- @h1{@gray{Programming Stories}} ;; XXX SKIP?
- (table
-  (let ((q-pic
-         (list
-          (list @p{Where does software come from? @br[]
-                   @small{See my SDR2017 talk: @br[]
-                              @a[href: "https://github.com/fare/evo2017"]{@q{From Software Creationism to Software Evolutionism}}}}
-                ;; XXXX Picture: "I am a God!"
-                "Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg" "50%")
-          (list @p{Which user needs does it serve? @br[]
-                   @small{See story-based design - @br[]
-                              and @em{understand} it, or beware the pitfalls}}
-                "puppy_coding.png"
-                "https://cdn-images-1.medium.com/max/600/1*snTXFElFuQLSFDnvZKJ6IA.png" "82%"))))
-    (table
-     (tr (map (λ (x) (td width: "50%" valign: 'bottom (apply image (rest x)))) q-pic))
-     (tr (map (λ (x) (td width: "50%" (font color: *gray* size: 6 (first x)))) q-pic)))))
-@comment{
-  Today I want to discuss stories specifically about programming.
-})
-
-(gslide ()
- @h1{The Take Home Points}
- @L{Stories @em{matter}}
- @L{Software tools imply a story, and @em{vice versa}} @comment{like a Fourier Transform}
- @L{Better tools via better stories}
- @L{Explicit stories are a great meta-tool...}
- @comment{
-I want to show you that the stories we tell *matter*.
-
-that they affect what we do, and the outcome of what we do.
-I want to show you that we do tell stories, even when we're not aware of them.
-I want to show you that some stories lead to better outcomes than others.
-}))
-
-(define (fragment #:index (index 1) . body)
-  (apply span class: 'fragment data-fragment-index: index body))
-
-(slide-group "Pairs of Stories" ;; XXX SKIP?
-(x-slide ()
- @h1{Pairs of Stories}
- (table
-  align: 'right width: table-width
-  (map (λ (name sad rad)
-         (row name sad rad #:left-bg *light-red* #:right-bg *light-blue* #:fragment? #f))
-       (t "Leitmotiv"
-          (fragment "Topic"))
-       (t (color #:fg *red* "Take a sad so-o-ong")
-          (fragment (spacing '("Programs" "Things" "Products" "Expertise"))))
-       (t (color #:fg *blue* "And make it be-e-etter")
-          (fragment (spacing '("Programming" "People" "Processes" "Learning"))))))
- @comment{
-  Let's start with a couple easy ones you already know...
- })
-
-(xad-slide
- #:sad-question "How to fund programs?"
- #:sad-issue "Software costly to produce"
- #:sad-story '("useful software is scarce" ;; own and sell it
-               "vendors & customers") ;; (static)
- #:sad-solution '("Proprietary Software" "Closed binaries") ;; unmaintainable by anyone but the vendor, if interested
- #:rad-question "How to fund programming?"
- #:rad-issue "Starved coders don't code"
- #:rad-story '("skilled labor is scarce" ;; own and sell *that*
-               "contributors & users") ;; (dynamic)
- #:rad-solution '("Free Software" "Open Source")) ;; shaped into maintainability by shared maintenance
- ;; Frame of mind: "white" "white" "white" ... "what do cows drink?"
-
-
-
-(gslide ()
- @h1{@q{I disagree!}}
- ~
- @L{It's OK to be wrong} ;; (for you, for me) -- at least one of us is wrong.
- @L{@em{Maybe} one story isn't @em{always} better}
- ~
- @L{Still, stories @em{matter}:}
- @L{Slightly different stories → vastly different outcomes}
- @comment{
- }))
-
-(slide-group "Simple Programming Stories"
-(xad-slide
- #:sad-question "Decompose programs?" ; (how to...)
- #:sad-issue "SW too big for one brainful"
- #:sad-story '("Hierarchy of components" "by fully informed expert")
- #:sad-solution (t "Flowcharts, UML" @gray{Top-down management})
- #:rad-question "Decompose programming?"
- #:rad-issue "Cooperation by many brains"
- #:rad-story '("Propagate partial info along" "human&machine networks")
- #:rad-solution (t "SW distributions, forums"
-                      @gray{Distributed version control}))
-
-(xad-slide
- #:sad-question "Achieve great software?" ; (how to...)
- #:sad-issue "Improving software is hard"
- #:sad-story '("Disseminate expertise"
-               "Restrict access to experts")
- #:sad-solution (t "Standards" @gray{Segregation by expertise}) ;; Conway's Law
- #:rad-question "Foster better programming?"
- #:rad-issue '("Improving ourselves is hard") ;; learn from our and their successes and failures
- #:rad-story '("Learn from experience" ;; other people's, or your own; experience as an output, rather than expertise as an input
-               "Cultivate good incentives") ;; information isn't the limiting factor
- #:rad-solution (t "Communities" @gray{Open competitive markets}))
-
-;;(slide-group "Stories about Programming Quality"
-(xad-slide
- ;; iterative vs interactive
- #:sad-question "Get Programs Debugged" ; (how to...)
- #:sad-issue @gray{Program bugs need fixed}
- #:sad-story (t "Bugs are exceptions" @t{Retrofit @i{ad hoc} tools})
- #:sad-solution (t @gray{Low-level debugger} @gray{Ad hoc debug info})
- #:rad-question "Explore Program Semantics"
- #:rad-issue @gray{Semantics isn't obvious}
- #:rad-story (t "Imperfection is the default"
-                @t{Use @em{normal} tools to explore})
- #:rad-solution (t @gray{Compiler as reversible lens} @gray{Virtualized Experiment}))
-
-(xad-slide
- #:sad-question "Secure existing software?" ; (how to...)
- #:sad-issue @gray{Programs are vulnerable}
- #:sad-story (t "Security as afterthought"
-                   @gray{Security its own expertise})
- #:sad-solution (t @gray{Low-level protection} @gray{Patch leak after leak})
- #:rad-question "Build software securely?"
- #:rad-issue @gray{Programming is adversarial}
- #:rad-story (t "Security as aspect of Design"
-                   @gray{Programmer education})
- #:rad-solution (t @gray{High-level capabilities} @gray{Security by construction}))
-
-(xad-slide
- #:sad-question "Deal with catastrophes?" ; (how to...)
- #:sad-issue "Bad manip. → Data loss"
- #:sad-story '("Exceptional catastrophes"
-               "Blame end-users")
- #:sad-solution (t "Confirm menus, remove bin"
-                   @t{Expensive limited "Undo"}) ;; programmer-intensive add-ons
- #:rad-question "Eliminate catastrophes?"
- #:rad-issue "Bad manip. unexpressible"
- #:rad-story '("Failures everyday normal"
-               "Blame system developers")
- #:rad-solution '("Monotonic storage" ;; XXX append-only
-                  "Universal infinite undo"))) ;; system-provided default
-
-(slide-group "Stories about Programming Languages"
-(xad-slide
- #:sad-question "Make device programmable" ; (how to...)
- #:sad-issue @gray{Expose device features}
- #:sad-story (t "PLs are for machines"
-                @gray{Computation is expensive})
- #:sad-solution '("match device capabilities"
-                  "Turing tar pit")
- #:rad-question "Express programming ideas"
- #:rad-issue @gray{Convey human meanings}
- #:rad-story (t "PLs are for humans"
-                @gray{Good thought is expensive})
- #:rad-solution '("match human cognition" ;; and social processes
-                  "minimize cognitive load")) ;; intrinsic vs incidental complexity
-
-(xad-slide
- #:sad-question "Handle repetitive code?" ; (how to...)
- #:sad-issue "Drudgery: boring repetition"
- #:sad-story '("Programmer as worker" ;; grunt
-               "Language as given")
- #:sad-solution '("Informal Design Patterns"
-                  "Plan more drudgery") ;; manually enforce consistency
- #:rad-question "Automate what can be?"
- #:rad-issue "Keep coding interesting" ;; "I object to doing things that computers can do." — Olin Shivers
- #:rad-story '("Programmer as thinker" "Language as evolving")
- #:rad-solution '("Formal Metaprograms"
-                  "Extensible language")) ;; Turing's theorem is based on metaprograms!
-
-(xad-slide
- #:sad-question "Extend the syntax?" ; (how to...)
- #:sad-issue @gray{Hooks into existing syntax} ;; assuming we want extensibility
- #:sad-story '("Side-effect One True Syntax" ;; as in Common Lisp
-               "Scarce conflicted resource")
- #:sad-solution (t @gray{Global macros, readtable}
-                   @gray{Committee settles conflicts})
- #:rad-question "Explore useful syntaxes?"
- #:rad-issue @gray{Best express each fragment}
- #:rad-story '("Pure local syntax increment"
-               "Infinite exploration space")
- #:rad-solution (t @gray{Scoped syntax specification}
-                   @gray{Racket languages, OMeta}))
-
-(xad-slide
- #:sad-question "Users ≠ Programmers" ; (how to address the fact that...)
- #:sad-issue "Two paradigms, UI vs PL"
- #:sad-story (t @gray{Dumbing down for Users}
-                   @gray{All-Power for Devs (in VM?)})
- #:sad-solution (t @gray{Unrelated UI and PL} @gray{Segregation})
- #:rad-question "Using = Programming"
- ;; The difference between a programmer and a user, is that
- ;; the programmer knows there is no difference between using and programming. — Faré
- #:rad-issue "One PL, spoken or written"
- #:rad-story (t @gray{One computer interaction} @gray{Continuum of proficiency})
- #:rad-solution (t @gray{Integrated interface} @gray{PL levels and dialects}))
-
-(xad-slide
- #:sad-question "P'er ≠ PL Implementer" ; (how to address the fact that...)
- #:sad-issue @gray{Writing a compiler is hard} ;; a correct one even worse
- #:sad-story (t @gray{Specialists implement PL} @gray{Mere programmers use PL})
- #:sad-solution (t @gray{Closed PL implementations} @gray{Few, magic, PLs})
- #:rad-question "P'ing = PL Implementing" ; Programming *is* implementing the language spoken by the users!
- #:rad-issue @gray{Modular DSL increments} ; only hard if not done from scratch
- #:rad-story (t "Special case of U = P" @em{Each P is PL spoken by U})
- #:rad-solution (t @gray{@em{First-class implementations}} ;; PCLSRing
-                      @gray{Lots of DSLs to serve users})) ;; the CUSTOMER experience shows up in the code!
-
-(xad-slide
- #:sad-question @gray{PL Definer ≠ Implementer} ; (how to address the fact that...)
- #:sad-issue @gray{Designing a PL is hard} ; once again, only for experts
- #:sad-story (t @gray{Specialists define big PL} @gray{Others implement})
- #:sad-solution (t @gray{Standard for language} @gray{Decades-old design}) ; blind spot, slow update cycle, bit rot
- #:rad-question @gray{PL Defining = Implementing}
- #:rad-issue @gray{Specify = Implement}
- #:rad-story (t @gray{Declarative specification} @gray{Orthogonal impl. strategies})
- #:rad-solution (t @gray{Grammatical mixins} @gray{Pervasive experimentation}))
-
-(xad-slide
- #:sad-question @gray{Get a specialized language} ; (how to...)
- #:sad-issue @gray{Heterogeneous activities}
- #:sad-story (t @gray{Each domain its experts} @gray{Segregation of experts})
- #:sad-solution (t @gray{External DSLs}
-                      @gray{Scripting languages})
- #:rad-question @gray{Specialize conversation?}
- #:rad-issue @gray{Express domain expertise}
- #:rad-story (t @gray{One brain, many topics}
-                   @gray{Adapt PL to domain})
- #:rad-solution (t @gray{Internal DSLs}
-                      @gray{Contexts of universal PL})))
-
-(slide-group @gray{More Programming Stories}
-(xad-slide
- #:sad-question @gray{Document conventions} ; (how to...)
- #:sad-issue @gray{Define module interfaces}
- #:sad-story (t @gray{PL as given, modules fixed}
-               @gray{PL limit expressible intent})
- #:sad-solution (t @gray{Informal contracts}
-                  @gray{Fixed team boundaries})
- #:rad-question @gray{Agree on responsibilities}
- #:rad-issue @gray{Define team interfaces}
- #:rad-story (t @gray{Extend PL, trade modules}
-               @gray{Express if benefit > cost})
- ;; if you can afford the testing that went into SQLite, you can afford proofs.
- #:rad-solution (t @gray{Formalize contracts}
-                  @gray{Negotiate responsibilities}))
-
-(xad-slide
- #:sad-question @gray{Arbitrate Resource?} ; (how to...)
- #:sad-issue @gray{Maintain shared invariants}
- #:sad-story (t @gray{Central dictator needed}
-               @gray{Schedule resource use})
- #:sad-solution (t @gray{(OS or App) Kernel}
-                  @gray{Static set of resources})
- #:rad-question @gray{Resolve Conflicts?}
- #:rad-issue @gray{Owners trade resources}
- #:rad-story (t @gray{Self-enforcing contracts}
-               @gray{Linear logic of ownership})
- #:rad-solution (t @gray{Invariant-enforcing linker}
-                  @gray{Dynamic resource bundles}))
-
-(xad-slide
- #:sad-question @gray{Connect Computers} ; (how to...)
- #:sad-issue @gray{Overcome one-system limit} ; both technical and social limits
- #:sad-story (t @gray{From machines to meaning}
-               @gray{Many cpus, weak federation} )
- #:sad-solution (t @gray{Remote method invocation}
-                  @gray{Shipping state around})
- #:rad-question @gray{Distribute Computation}
- #:rad-issue @gray{Beat many-cpu complexity}
- #:rad-story (t @gray{From meaning to machines}
-               @gray{One system, many cpus})
- #:rad-solution (t @gray{Declarative deployment}
-                  @gray{Content-based addressing}))
-
-(xad-slide
- #:sad-question @gray{Handle mistrust?} ; (how to...)
- #:sad-issue @gray{Need protection barriers}
- #:sad-story (t @gray{Kernel-managed domains} @gray{Expensive rigid model})
- #:sad-solution (t @gray{Static container hierarchy}
-                  @gray{Expensive and inexpressive})
- #:rad-question @gray{Express limited trust?}
- #:rad-issue @gray{Bundle capabilities}
- #:rad-story (t @gray{Everyone @kbd{root} in own VM}
-                   @gray{Recursively so, by default})
- #:rad-solution (t @gray{PL support virtualization}
-                  @gray{Cheap to create sub-user}))
-
-(xad-slide
- #:sad-question @gray{Persist important data?} ; (how to...)
- #:sad-issue @gray{Important data must persist} ; against HW/SW failure
- #:sad-story (t @gray{Manual persistence}
-               @gray{Transient by default})
- #:sad-solution (t @gray{Filesystems, databases} @gray{Explicit I/O})
- #:rad-question @gray{Write persistent software?}
- #:rad-issue @gray{All data is important}
- #:rad-story (t @gray{Why else program about it?}
-                   ;; You don't care when memory is spilled from cache to RAM,
-                   ;; why care when it's spilled from RAM to disk?
-                   @gray{Persistence by default}) ;; Transients for performance
- #:rad-solution (t @gray{Orthogonal persistence}
-                      @gray{Implicit support in PL})))
-
-(slide-group "Stories about Change"
-(xad-slide
- #:sad-question "Model a changing world?" ; (how to...)
- #:sad-issue "Mutations happen"
- #:sad-story '("Mutable Object-Oriented"
-               "Can't trust any(one|thing)")  ;; live in a world of fear
- #:sad-solution '("Imperative programming"
-                  "Locks: transient protection")
- #:rad-question "Model changes to world?"
- #:rad-issue "Transformations compose"
- #:rad-story '("Immutable Value-Oriented"
-               "Can always reason")
- #:rad-solution '("Functional Programming" ;; Purity by default, at base-level, at meta-level, too... Unlambda!
-                  "Monads, extensible effects") ;; Problem: too much or too little
- #:krad-question "Discuss relevant change?"
- #:krad-issue "Record and Process Events"
- #:krad-story (t "First-class Change-Oriented"
-                 @t{Mutable vs immutable @em{view}})
- #:krad-solution '("Differentiate, Integrate" ;; take the benefits of FP for granted...
-                   "Switch view to/from FP")))
-
-#;
-(xad-slide
- #:sad-question "x?" ; (how to...)
- #:sad-issue ""
- #:sad-story '("" "")
- #:sad-solution '("" "")
- #:rad-question "y?"
- #:rad-issue ""
- #:rad-story '("" "")
- #:rad-solution '("" ""))
-|#
+(slide-group "Semantic Towers"
+(gslide (data-transition: 'none)
+  (fig 'simple-tower-o height: "600"))
+(gslide (data-transition: 'none)
+  (fig 'simple-tower-1 height: "600"))
+(gslide (data-transition: 'none)
+  (fig 'simple-tower-2 height: "600"))
+(gslide (data-transition: 'none)
+  (fig 'simple-tower-3 height: "600"))
+(gslide (data-transition: 'none)
+  (fig 'simple-tower-4 height: "600"))
+(gslide (data-transition: 'none)
+  (fig 'simple-tower-5 height: "600"))
+(gslide (data-transition: 'none)
+  (fig 'simple-tower-6 height: "600")))
 
 (slide-group "Conclusion"
 (gslide ()
@@ -646,6 +341,7 @@ N/A
 (output-xml
  @html{
    @head{
+     @meta[http-equiv: 'content-type content: "text/html; charset=utf-8"]
      @link[rel: 'stylesheet href: "resources/my.css"]
      @link[rel: 'stylesheet href: @reveal-url{css/reveal.css}]
      @link[rel: 'stylesheet href: @reveal-url{css/theme/black.css}]
@@ -661,7 +357,8 @@ N/A
          dependencies: [
            {src: "@reveal-url{plugin/highlight/highlight.js}",
             async: true, callback: () => hljs.initHighlightingOnLoad()}],
-         controls: false
+         controls: false,
+         // transition: none
        });
      }}})
 

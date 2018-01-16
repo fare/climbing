@@ -48,3 +48,12 @@ rsync: climbing.pdf climbing.html
 
 fare-obt2018.html: fare-obt2018.rkt
 	racket $< > $@
+
+fci: fci-obt2018.ss
+	slideshow --start $${p:-1} $< # --comment-on-slide
+
+%.pdf: %.ss
+	slideshow --pdf -o $@ $<
+
+fci-obt2018.pdf:
+
