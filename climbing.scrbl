@@ -312,7 +312,7 @@ that happened during the computation ---
 or would happen were the computation to actually run (or run again).
 More abstract representations can be symbolic,
 at a higher-level than a low-level logger could record;
-they could be monadic functions or arbitrary Kliesli arrows.
+they could be monadic functions or arbitrary Kleisli arrows.
 In the end, there are two complementary approaches in which
 effects are either @emph{simulated} or @emph{performed}.
 Two functions @m{simulate} and @m{perform} may translate one approach into the other:
