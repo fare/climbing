@@ -356,8 +356,8 @@ can then work on all possible implementations of all languages,
 specialized using e.g. typeclasses.
 
 Finally, rooting a reflection protocol in formal methods means
-it is now possible reason about metaprograms, and maybe even feasably prove them correct;
-they need no longer invalidate semantic reasoning nor introduce unmanageable complexity.
+it is now possible to reason about metaprograms, and maybe even feasably prove them correct;
+they no longer need to invalidate semantic reasoning, nor to introduce unmanageable complexity.
 
 @section{Conclusion and Future Work}
 

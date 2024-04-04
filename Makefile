@@ -57,3 +57,5 @@ fci: fci-obt2018.ss
 
 fci-obt2018.pdf:
 
+link:
+	ln -s /home/fare/fare/phdthesis/build resources/pic

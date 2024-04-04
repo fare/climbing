@@ -18,3 +18,10 @@ A PDF version of the paper (2 pages + bibliography overflow)
 can be found here:
 
   * http://fare.tunes.org/files/climbing/climbing.pdf
+
+Building the PDF
+----------------
+
+You need [Racket](https://racket-lang.org) using Scribble and
+the [acmart-fare module](https://github.com/fare/acmart),
+plus some (La)TeX distribution.
