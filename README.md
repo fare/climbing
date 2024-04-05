@@ -22,6 +22,5 @@ can be found here:
 Building the PDF
 ----------------
 
-You need [Racket](https://racket-lang.org) using Scribble and
-the [acmart-fare module](https://github.com/fare/acmart),
+You need [Racket](https://racket-lang.org) using Scribble,
 plus some (La)TeX distribution.

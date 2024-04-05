@@ -82,8 +82,10 @@
 (define (psi) "ψ")
 (define (circ) "∘")
 
-(define (raw-latex . args)
-  (element (style "relax" '(exact-chars)) args))
+(define raw-style (make-style #f '(exact-chars)))
+(define (raw-latex . x) (make-element raw-style x))
+
+(define ($ . x) (raw-latex "$" x "$"))
 
 (define (spacing)
   (element-with-render-mode
@@ -119,7 +121,7 @@
 (define (make-figure-table ps figure-dir)
   (block-with-render-mode
    (λ (mode)
-     (let ([image-path (λ (x) (format "~a/fig-~a" figure-dir (car x)))]
+     (let ([image-path (λ (x) (format "~a/fig-~a.eps" figure-dir (car x)))]
            [scale (case mode [(html) 1/7] [(latex) .55])])
        (tabular
         #:style 'center

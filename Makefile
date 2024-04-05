@@ -22,18 +22,18 @@ install: climbing.html climbing.pdf
 	donuts.pl unhtml < $< | wc
 
 %.PDF: %.pdf
-	#evince -f -i $${p:-1} $<
-	xpdf -z page -fullscreen $< :$${p:-1}
+	evince -f -i $${p:-1} $<
+	#xpdf -z page -fullscreen $< :$${p:-1}
 
 %.pdf: %.scrbl ${src}
-	time scribble --dest-name $@ --pdf $<
+	time scribble --dest-name $@ --prefix prefix.tex --pdf $<
 
 ${ae}.html: ${ae}.scrbl ${src}
 %.html: %.scrbl utils.rkt bibliography.scrbl
 	time scribble --dest-name $@ --html $<
 
 %.latex: %.scrbl ${src}
-	time scribble --latex --dest tmp $<
+	time scribble --latex --dest --prefix prefix.tex tmp $<
 
 clean:
 	rm -f *.pdf *.html *.tex *.css *.js

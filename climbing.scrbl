@@ -1,5 +1,4 @@
-#lang scribble/acmart-fare @(format "sigplan") @10pt
-@;#lang scribble/acmart @sigplan @authorversion @10pt
+#lang scribble/acmart @sigplan @authorversion @10pt
 @;-*- Scheme -*-
 
 @(require
@@ -12,25 +11,25 @@
 @(define figure-dir "/home/fare/fare/phdthesis/build")
 @(define (figure-table ps) (make-figure-table ps figure-dir))
 
-
 @;Metadata for the Racket builtin scribble/acmart module
-@;@author["François-René Rideau"
-@;  #:affiliation (affiliation #:institution (institution "TUNES"))
-@;  #:email (email "fare@tunes.org")]
-@;@keywords["First-class"] @; "implementation" "reflection" "semantics" "tower"]
-@;@startPage[42]
-@;@(acmConference "Off the Beaten Track" "2018" "Los Angeles")
-@;@ccsdesc[300]{Software and its engineering~Reflective middleware}
+@(define TUNES
+   (affiliation #:institution "TUNES"
+                #:city "" #:country "")) @; ACM makes those fields mandatory. F them.
 
-@;Metadata for my own scribble/acmart-fare module
+@author["François-René Rideau"
+  #:affiliation TUNES #:orcid "0009-0005-8843-8318"
+  #:email "fare@tunes.org"]
+@;#:affiliation (affiliation #:institution (institution "TUNES")) ;; #:city "Cambridge" #:country "USA")
+@keywords["First-class"] @; "implementation" "reflection" "semantics" "tower"]
+@startPage{42}
+@acmConference["Off the Beaten Track" "2018" "Los Angeles"]
+@acmYear{}
+@ccsdesc[#:number 300]{Software and its engineering~Reflective middleware}
+@acmPrice{}
+@acmDOI{}
+@acmISBN{}
 
-@set-top-matter[#:printccs #t #:printacmref #f #:printfolios #f]
-@authorinfo["François-René Rideau" "TUNES" "fare@tunes.org"]
-@conferenceinfo[#:short-name "OBT 2018"
-  "Off the Beaten Track 2018" "January 13, 2018" "Los Angeles, California"]
-@copyright-year{2018}
-@set-copyright{none}
-@acm-doi{}
+@void|{
 @ccsxml{
 <ccs2012>
 <concept>
@@ -149,31 +148,30 @@
 <concept_significance>100</concept_significance>
 </concept>
 </ccs2012>
-}
+}|
 
-@ccsdesc[500]{Theory of computation~Operational semantics}
-@ccsdesc[500]{Theory of computation~Categorical semantics}
-@;@ccsdesc[300]{Theory of computation~Abstract machines}
-@;@ccsdesc[300]{Theory of computation~Algebraic language theory}
-@;@ccsdesc[300]{Theory of computation~Rewrite systems}
-@;@ccsdesc[300]{Theory of computation~Abstraction}
-@;@ccsdesc[100]{Theory of computation~Logic and verification}
-@;@ccsdesc[100]{Theory of computation~Programming logic}
-@ccsdesc[100]{Theory of computation~Type theory}
-@ccsdesc[500]{Software and its engineering~Reflective middleware}
-@ccsdesc[500]{Software and its engineering~Runtime environments}
-@;@ccsdesc[300]{Software and its engineering~Semantics}
-@ccsdesc[300]{Software and its engineering~Just-in-time compilers}
-@;@ccsdesc[300]{Software and its engineering~Dynamic compilers}
-@;@ccsdesc[100]{Software and its engineering~Operating systems}
-@;@ccsdesc[100]{Software and its engineering~Software functional properties}
-@;@ccsdesc[100]{Software and its engineering~Extra-functional properties}
-@;@ccsdesc[100]{Software and its engineering~Domain specific languages}
-@;@ccsdesc[100]{Software and its engineering~Macro languages}
-@;@ccsdesc[100]{Software and its engineering~Software libraries and repositories}
-@;@ccsdesc[100]{Software and its engineering~Software evolution}
-@;@ccsdesc[100]{Software and its engineering~Collaboration in software development}
-
+@ccsdesc[#:number 500]{Theory of computation~Operational semantics}
+@ccsdesc[#:number 500]{Theory of computation~Categorical semantics}
+@;@ccsdesc[#:number 300]{Theory of computation~Abstract machines}
+@;@ccsdesc[#:number 300]{Theory of computation~Algebraic language theory}
+@;@ccsdesc[#:number 300]{Theory of computation~Rewrite systems}
+@;@ccsdesc[#:number 300]{Theory of computation~Abstraction}
+@;@ccsdesc[#:number 100]{Theory of computation~Logic and verification}
+@;@ccsdesc[#:number 100]{Theory of computation~Programming logic}
+@ccsdesc[#:number 100]{Theory of computation~Type theory}
+@ccsdesc[#:number 500]{Software and its engineering~Reflective middleware}
+@ccsdesc[#:number 500]{Software and its engineering~Runtime environments}
+@;@ccsdesc[#:number 300]{Software and its engineering~Semantics}
+@ccsdesc[#:number 300]{Software and its engineering~Just-in-time compilers}
+@;@ccsdesc[#:number 300]{Software and its engineering~Dynamic compilers}
+@;@ccsdesc[#:number 100]{Software and its engineering~Operating systems}
+@;@ccsdesc[#:number 100]{Software and its engineering~Software functional properties}
+@;@ccsdesc[#:number 100]{Software and its engineering~Extra-functional properties}
+@;@ccsdesc[#:number 100]{Software and its engineering~Domain specific languages}
+@;@ccsdesc[#:number 100]{Software and its engineering~Macro languages}
+@;@ccsdesc[#:number 100]{Software and its engineering~Software libraries and repositories}
+@;@ccsdesc[#:number 100]{Software and its engineering~Software evolution}
+@;@ccsdesc[#:number 100]{Software and its engineering~Collaboration in software development}
 
 @keywords{
   First-class,
