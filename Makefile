@@ -26,14 +26,14 @@ install: climbing.html climbing.pdf
 	#xpdf -z page -fullscreen $< :$${p:-1}
 
 %.pdf: %.scrbl ${src}
-	time scribble --dest-name $@ --prefix prefix.tex --pdf $<
+	time scribble --dest-name $@ --pdf $<
 
 ${ae}.html: ${ae}.scrbl ${src}
 %.html: %.scrbl utils.rkt bibliography.scrbl
 	time scribble --dest-name $@ --html $<
 
 %.latex: %.scrbl ${src}
-	time scribble --latex --dest --prefix prefix.tex tmp $<
+	time scribble --latex --dest build $<
 
 clean:
 	rm -f *.pdf *.html *.tex *.css *.js

@@ -1,4 +1,4 @@
-#lang scribble/acmart @sigplan @authorversion @10pt
+#lang scribble/acmart @sigplan @10pt
 @;-*- Scheme -*-
 
 @(require
@@ -7,6 +7,10 @@
  scriblib/footnote
  "utils.rkt"
  "bibliography.scrbl")
+
+@settopmatter{printccs=true, printacmref=false, printfolios=false}
+@setcopyright{none}
+@copyrightyear{}
 
 @(define figure-dir "/home/fare/fare/phdthesis/build")
 @(define (figure-table ps) (make-figure-table ps figure-dir))
