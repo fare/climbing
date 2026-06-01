@@ -5,12 +5,14 @@
  scriblib/autobib
  scriblib/figure
  scriblib/footnote
+ scriblib/render-cond
  "utils.rkt"
  "bibliography.scrbl")
 
-@settopmatter{printccs=true, printacmref=false, printfolios=false}
-@setcopyright{none}
-@copyrightyear{}
+@(latex-block
+   @settopmatter{printccs=true, printacmref=false, printfolios=false}
+   @setcopyright{none}
+   @copyrightyear{})
 
 @(define (figure-table ps) (make-figure-table ps))
 
@@ -23,6 +25,8 @@
   #:affiliation TUNES @; #:orcid "0009-0005-8843-8318" @; orcid FAILS on latest racket v9.2.0.5-2026-06-01-1162fa20ab scribble with acmart v2.16
   #:email "fare@tunes.org"]
 @;#:affiliation (affiliation #:institution (institution "TUNES")) ;; #:city "Cambridge" #:country "USA")
+
+@(latex-block
 @keywords["First-class"] @; "implementation" "reflection" "semantics" "tower"]
 @startPage{42}
 @acmConference["Off the Beaten Track" "2018" "Los Angeles"]
@@ -182,7 +186,7 @@
   reflection,
   semantics,
   tower
-}
+})
 
 @title{Climbing Up the Semantic Tower --- at Runtime}
 

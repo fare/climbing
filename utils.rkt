@@ -108,6 +108,11 @@
     ;;[text (f 'text)]
     [else (error "Unsupported render mode")]))
 
+(define-syntax-rule (latex-block body ...)
+  (cond-block
+    [latex (nested body ...)]
+    [else (nested)]))
+
 (define (separate-list sep l)
   (if (or (null? l) (null? (cdr l))) l
       (cons (car l) (cons sep (separate-list sep (cdr l))))))
