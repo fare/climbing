@@ -1,10 +1,11 @@
 /*.css
 *.js
 *.html
-*.pdf
 *.dvi
 *.tex
 *.png
+*.eps
 *~
 resources/pic
 build
+climbing.pdf

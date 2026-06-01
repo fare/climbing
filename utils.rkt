@@ -112,16 +112,25 @@
   (if (or (null? l) (null? (cdr l))) l
       (cons (car l) (cons sep (separate-list sep (cdr l))))))
 
-(define (image-type mode)
+(define render-mode
+  (make-parameter (string->symbol (or (getenv "RENDER_MODE") "latex"))))
+
+(define (render-html?) (eq? (render-mode) 'html))
+(define (render-latex?) (eq? (render-mode) 'latex))
+(define (render-text?) (eq? (render-mode) 'text))
+
+(define (image-type (mode (render-mode)))
   (case mode
     [(html) "png"]
     [(latex) "pdf"]))
 
-
-(define (make-figure-table ps figure-dir)
+(define (make-figure-table ps)
   (block-with-render-mode
    (λ (mode)
-     (let ([image-path (λ (x) (format "~a/fig-~a.eps" figure-dir (car x)))]
+     (let ([image-path (λ (x)
+                         (case mode
+                           [(latex) (format "fig-~a.pdf" (car x))]
+                           [(html) (format "fig-~a.png" (car x))]))]
            [scale (case mode [(html) 1/7] [(latex) .55])])
        (tabular
         #:style 'center

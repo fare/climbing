@@ -26,14 +26,20 @@ install: climbing.html climbing.pdf
 	#xpdf -z page -fullscreen $< :$${p:-1}
 
 %.pdf: %.scrbl ${src}
-	time scribble --dest-name $@ --pdf $<
+	RENDER_MODE=latex time scribble --dest-name $@ --pdf $<
+
+pngs:
+	-for i in boundedLiveness observability soundness completeness ; do \
+	  [ -f fig-$$i.png ] || \
+	  convert -density 600x600 -antialias -background white -flatten fig-$$i.pdf fig-$$i.png ; \
+	done
 
 ${ae}.html: ${ae}.scrbl ${src}
-%.html: %.scrbl utils.rkt bibliography.scrbl
-	time scribble --dest-name $@ --html $<
+%.html: %.scrbl utils.rkt bibliography.scrbl pngs
+	RENDER_MODE=html time scribble --dest-name $@ --html $<
 
 %.latex: %.scrbl ${src}
-	time scribble --latex --dest build $<
+	RENDER_MODE=latex time scribble --latex --dest build $<
 
 clean:
 	rm -f *.pdf *.html *.tex *.css *.js

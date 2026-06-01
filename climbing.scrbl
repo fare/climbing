@@ -12,8 +12,7 @@
 @setcopyright{none}
 @copyrightyear{}
 
-@(define figure-dir "/home/fare/fare/phdthesis/build")
-@(define (figure-table ps) (make-figure-table ps figure-dir))
+@(define (figure-table ps) (make-figure-table ps))
 
 @;Metadata for the Racket builtin scribble/acmart module
 @(define TUNES
@@ -21,7 +20,7 @@
                 #:city "" #:country "")) @; ACM makes those fields mandatory. F them.
 
 @author["François-René Rideau"
-  #:affiliation TUNES #:orcid "0009-0005-8843-8318"
+  #:affiliation TUNES @; #:orcid "0009-0005-8843-8318" @; orcid FAILS on latest racket v9.2.0.5-2026-06-01-1162fa20ab scribble with acmart v2.16
   #:email "fare@tunes.org"]
 @;#:affiliation (affiliation #:institution (institution "TUNES")) ;; #:city "Cambridge" #:country "USA")
 @keywords["First-class"] @; "implementation" "reflection" "semantics" "tower"]
