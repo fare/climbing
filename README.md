@@ -14,13 +14,14 @@ or the one at LambdaConf 2018 at < https://youtu.be/fH51qhI3hq0 >.
 Viewing the article
 -------------------
 
-A PDF version of the paper (2 pages + bibliography overflow)
+Precompiled versions of the paper (2 pages + bibliography overflow)
 can be found here:
 
-  * http://fare.tunes.org/files/climbing/climbing.pdf
+  * [PDF](https://fare.tunes.org/files/climbing/climbing.pdf)
+  * [HTML](https://fare.tunes.org/files/climbing/climbing.html)
 
 Building the PDF
 ----------------
 
 You need [Racket](https://racket-lang.org) using Scribble,
-plus some (La)TeX distribution.
+plus some (La)TeX distribution, and imagemagick for the HTML.
